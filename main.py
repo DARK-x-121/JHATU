@@ -1,4 +1,4 @@
-                import os
+import os
 import sys
 import re
 import time
@@ -75,8 +75,8 @@ def main():
     
     print(f"{Fore.CYAN}┌──({Fore.GREEN}SYSTEM STATUS{Fore.CYAN})")
     print(f"{Fore.CYAN}├── Dynamic Modules : {Fore.YELLOW}{len(plugins)} Plugin(s) Loaded")
-    print(f"{Fore.CYAN}├── Engine Core     : {Fore.YELLOW}Groq AI Multi-Fallback Engine")
-    print(f"{Fore.CYAN}└── Cyber Shell     : {Fore.GREEN}Active {Fore.WHITE}(Type 'exit' to disconnect)")
+    print(f"{Fore.CYAN}├── Engine Core     : {Fore.YELLOW}Jhatu AI Multi-Fallback Engine")
+    print(f"{Fore.CYAN}└── Cyber agent     : {Fore.GREEN}Active {Fore.WHITE}(Type 'exit' to disconnect)")
     print(f"{Fore.BLUE}═" * 55 + "\n")
 
     messages = [
