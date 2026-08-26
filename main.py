@@ -19,7 +19,8 @@ def call_groq_api(api_key, messages):
         "Content-Type": "application/json"
     }
     payload = {
-        "model": "llama-3.1-8b-instant",
+        "model": "openai/gpt-oss-20b",
+        
     
         "messages": messages,
         "temperature": 0.6,
