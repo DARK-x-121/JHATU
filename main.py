@@ -129,6 +129,74 @@ def main():
         sys.exit(1)
         
     plugins = load_dynamic_plugins()
+import os
+import sys
+import re
+import importlib
+import pkgutil
+import requests
+from datetime import datetime
+from dotenv import load_dotenv
+from colorama import Fore, Style, init
+
+init(autoreset=True)
+load_dotenv()
+
+from config import BANNER
+from auth import verify_access
+from system_tools import create_local_file
+
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+AVAILABLE_MODELS = [
+    "llama-3.1-8b-instant",
+    "llama-3.3-70b-versatile",
+    "mixtral-8x7b-32768"
+]
+
+def load_dynamic_plugins():
+    loaded_plugins = []
+    if os.path.exists("plugins"):
+        for _, module_name, _ in pkgutil.iter_modules(["plugins"]):
+            try:
+                module = importlib.import_module(f"plugins.{module_name}")
+                if hasattr(module, "run_plugin"):
+                    loaded_plugins.append(module)
+            except Exception:
+                pass
+    return loaded_plugins
+
+def call_groq_api(api_key, messages):
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json"
+    }
+    for model_name in AVAILABLE_MODELS:
+        payload = {
+            "model": model_name,
+            "messages": messages,
+            "temperature": 0.6,
+            "max_tokens": 2048
+        }
+        try:
+            res = requests.post(GROQ_API_URL, headers=headers, json=payload, timeout=20)
+            if res.status_code == 200:
+                return res.json()['choices'][0]['message']['content']
+        except Exception:
+            continue
+    return f"{Fore.RED}[!] System Unavailable."
+
+def main():
+    verify_access()
+    os.system("clear" if os.name != "nt" else "cls")
+    print(BANNER)
+    
+    groq_key = os.getenv("GROQ_API_KEY")
+    if not groq_key:
+        print(f"{Fore.RED}[!] Missing API Key!")
+        sys.exit(1)
+        
+    plugins = load_dynamic_plugins()
     
     print(f"{Fore.GREEN}[+] {len(plugins)} Plugin(s) Active | Shell Ready\n")
 
@@ -183,4 +251,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
